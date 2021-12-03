@@ -1,0 +1,52 @@
+C51 COMPILER V9.60.0.0   MAIN                                                              11/04/2021 22:17:19 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE INCDIR(C:\Keil_v5\C51) DEBUG OBJECTEXTEN
+                    -D PRINT(.\Listings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include "main.h"
+   2          
+   3          void main()
+   4          {
+   5   1          //Pwm_Init();
+   6   1          //Uart2Init();
+   7   1          //Uart3Init();
+   8   1        IIC_Init();
+   9   1        
+  10   1        OLED_Init(); 
+  11   1        OLED_Clear(); 
+  12   1        mx_ina226_init();
+  13   1        OLED_ShowString(3,0,"INA226:",16);
+  14   1        OLED_ShowString(3,2,"Voltage:",16);
+  15   1        OLED_ShowString(3,4,"Current:",16);
+  16   1        OLED_ShowString(3,6,"Power:",16);
+  17   1        while(1)
+  18   1        {
+  19   2          Voltage = (u16)INA226_GetVoltage(INA226_ADDR1)*Voltage_LSB;
+  20   2          ShuntCurrent = (u16)(INA226_GetShunt_Current(INA226_ADDR1)* CURRENT_LSB);
+  21   2          Power = Voltage * ShuntCurrent;
+  22   2          OLED_ShowNum(73,2,Voltage,4,16);
+  23   2          OLED_ShowNum(73,4,ShuntCurrent,4,16);
+  24   2          OLED_ShowNum(73,6,Power,4,16);
+  25   2        
+  26   2        }
+  27   1      }
+  28          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    194    ----
+   CONSTANT SIZE    =     33    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      6    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

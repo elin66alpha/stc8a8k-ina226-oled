@@ -1,0 +1,60 @@
+C51 COMPILER V9.60.0.0   TIMER                                                             11/04/2021 22:17:19 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE TIMER
+OBJECT MODULE PLACED IN .\Objects\timer.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE timer.c OPTIMIZE(8,SPEED) BROWSE INCDIR(C:\Keil_v5\C51) DEBUG OBJECTEXTE
+                    -ND PRINT(.\Listings\timer.lst) TABS(2) OBJECT(.\Objects\timer.obj)
+
+line level    source
+
+   1          #include "timer.h"
+   2          void Timer0Init(void)   //定时器0---1ms--@11.0592MHz
+   3          {
+   4   1        EA = 1;
+   5   1        ET0 = 1;
+   6   1        AUXR &= 0x7F;   
+   7   1        TMOD &= 0xF0;   
+   8   1        TL0 = 0x66;   
+   9   1        TH0 = 0xFC;   
+  10   1        TF0 = 0;    
+  11   1        TR0 = 1;    
+  12   1      }
+  13          
+  14          void Delay1ms()   //@11.0592MHz
+  15          {
+  16   1        unsigned char i, j;
+  17   1      
+  18   1        _nop_();
+  19   1        _nop_();
+  20   1        _nop_();
+  21   1        i = 11;
+  22   1        j = 190;
+  23   1        do
+  24   1        {
+  25   2          while (--j);
+  26   2        } while (--i);
+  27   1      }
+  28          
+  29          void Delay(U8 ms)
+  30          {
+  31   1        U8 i;
+  32   1        for(i=0;i<ms;++i)
+  33   1        {
+  34   2          Delay1ms();
+  35   2        }
+  36   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     49    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

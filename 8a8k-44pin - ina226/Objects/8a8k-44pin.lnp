@@ -1,0 +1,9 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj",
+".\Objects\pwm.obj",
+".\Objects\oled.obj",
+".\Objects\timer.obj",
+".\Objects\ina226.obj",
+".\Objects\IIC.obj" 
+TO ".\Objects\8a8k-44pin" 
+PRINT(".\Listings\8a8k-44pin.m51") RAMSIZE(256) 

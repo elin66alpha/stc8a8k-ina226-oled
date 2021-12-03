@@ -1,0 +1,157 @@
+C51 COMPILER V9.60.0.0   INA226                                                            11/04/2021 22:17:20 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE INA226
+OBJECT MODULE PLACED IN .\Objects\ina226.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE ina226.c OPTIMIZE(8,SPEED) BROWSE INCDIR(C:\Keil_v5\C51) DEBUG OBJECTEXT
+                    -END PRINT(.\Listings\ina226.lst) TABS(2) OBJECT(.\Objects\ina226.obj)
+
+line level    source
+
+   1          #include "ina226.h"
+   2          
+   3          //初始化INA226
+   4          void mx_ina226_init(void)
+   5          { 
+   6   1       
+   7   1        INA226_SendData(INA226_ADDR1,CFG_REG,0x8000); //重新启动
+   8   1        
+   9   1        INA226_SendData(INA226_ADDR1,CFG_REG,0x484f); //设置转换时间204us,求平均值次数128，采样时
+             -间为204*128，设置模式为分流和总线连续模式
+  10   1        INA226_SendData(INA226_ADDR1,CAL_REG,CAL);  //设置分辨率
+  11   1        //INA226_Get_ID(INA226_ADDR1);          //获取ina226的id
+  12   1      }
+  13           
+  14          //设置寄存器指针
+  15          void INA226_SetRegPointer(u8 addr,u8 reg)
+  16          {
+  17   1        IIC_Start();
+  18   1       
+  19   1        Write_IIC_Byte(addr);
+  20   1        IIC_Wait_Ack();
+  21   1       
+  22   1        Write_IIC_Byte(reg);
+  23   1        IIC_Wait_Ack();
+  24   1       
+  25   1        IIC_Stop();
+  26   1      }
+  27           
+  28          //发送,写入数据
+  29          void INA226_SendData(u8 addr,u8 reg,u16 udata)
+  30          {
+  31   1        u8 temp=0;
+  32   1        IIC_Start();
+  33   1       
+  34   1        Write_IIC_Byte(addr);
+  35   1        IIC_Wait_Ack();
+  36   1       
+  37   1        Write_IIC_Byte(reg);
+  38   1        IIC_Wait_Ack();
+  39   1        
+  40   1        temp = (u8)(udata>>8);
+  41   1        Write_IIC_Byte(temp);
+  42   1        IIC_Wait_Ack();
+  43   1       
+  44   1        temp = (u8)(udata&0x00FF);
+  45   1        Write_IIC_Byte(temp);
+  46   1        IIC_Wait_Ack();
+  47   1        
+  48   1        IIC_Stop();
+  49   1      }
+  50           
+  51          //读取数据
+  52          u16 INA226_ReadData(u8 addr)
+  53          {
+C51 COMPILER V9.60.0.0   INA226                                                            11/04/2021 22:17:20 PAGE 2   
+
+  54   1        u16 temp=0;
+  55   1        IIC_Start();
+  56   1       
+  57   1        Write_IIC_Byte(addr+1);
+  58   1        IIC_Wait_Ack();
+  59   1        
+  60   1        temp = Read_IIC_Byte(1);
+  61   1        temp<<=8; 
+  62   1        temp |= Read_IIC_Byte(0);
+  63   1        
+  64   1        IIC_Stop();
+  65   1        return temp;
+  66   1      }
+  67          
+  68          u16 INA226_GetShunt_Current(u8 addr)
+  69          {
+  70   1        u16 temp=0; 
+  71   1        INA226_SetRegPointer(addr,CUR_REG);
+  72   1        temp = INA226_ReadData(addr);
+  73   1        if(temp&0x8000) temp = ~(temp - 1); 
+  74   1        return temp;
+  75   1      }
+  76           
+  77          //获取id
+  78          u32 INA226_Get_ID(u8 addr)
+  79          {
+  80   1        u32 temp=0;
+  81   1        INA226_SetRegPointer(addr,INA226_GET_ADDR);
+  82   1        temp = INA226_ReadData(addr);
+  83   1        return temp;
+  84   1      }
+  85           
+  86          //获取校准值
+  87          u16 INA226_GET_CAL_REG(u8 addr)
+  88          { 
+  89   1        u32 temp=0;
+  90   1        INA226_SetRegPointer(addr,CAL_REG);
+  91   1        temp = INA226_ReadData(addr);
+  92   1        return (u16)temp;
+  93   1      }
+  94           
+  95          
+  96          u16 INA226_GetVoltage(u8 addr)
+  97          {
+  98   1        u32 temp = 0;
+  99   1        INA226_SetRegPointer(addr,BV_REG);
+ 100   1        temp = INA226_ReadData(addr);
+ 101   1        return (u16)temp; 
+ 102   1      }
+ 103           
+ 104          u16 INA226_GetShuntVoltage(u8 addr)
+ 105          {
+ 106   1        int temp = 0;
+ 107   1        INA226_SetRegPointer(addr,SV_REG);
+ 108   1        temp = INA226_ReadData(addr);
+ 109   1        if(temp&0x8000) temp = ~(temp - 1); 
+ 110   1        return (u16)temp; 
+ 111   1      }
+ 112           
+ 113          
+ 114          //获取功率装载值,ina226内部计算的的功率，由于未经校准，故不采用
+ 115           
+C51 COMPILER V9.60.0.0   INA226                                                            11/04/2021 22:17:20 PAGE 3   
+
+ 116          u16 INA226_Get_Power(u8 addr)
+ 117          {
+ 118   1        int temp=0;
+ 119   1        INA226_SetRegPointer(addr,PWR_REG);
+ 120   1        temp = INA226_ReadData(addr);
+ 121   1        return (u16)temp;
+ 122   1      }
+ 123           
+ 124          //获取功率,ina226内部计算，不准确，不采用
+ 125          void Get_Power(float *Power)//W
+ 126          {
+ 127   1        *Power = (INA226_Get_Power(INA226_ADDR1)*POWER_LSB);
+ 128   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    369    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      26
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

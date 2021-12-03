@@ -1,0 +1,116 @@
+C51 COMPILER V9.60.0.0   INT                                                               08/02/2021 12:58:26 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE INT
+OBJECT MODULE PLACED IN .\Objects\INT.obj
+COMPILER INVOKED BY: D:\keil uv5\C51\BIN\C51.EXE INT.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\INT.
+                    -lst) TABS(2) OBJECT(.\Objects\INT.obj)
+
+line level    source
+
+   1          
+   2          void uart3_interrupt() interrupt 17 //uart3 17
+   3          {
+   4   1        U8 TEMP;
+*** ERROR C202 IN LINE 4 OF INT.c: 'U8': undefined identifier
+*** ERROR C141 IN LINE 4 OF INT.c: syntax error near 'TEMP', expected ';'
+   5   1        U8 JS;
+*** ERROR C202 IN LINE 5 OF INT.c: 'U8': undefined identifier
+*** ERROR C141 IN LINE 5 OF INT.c: syntax error near 'JS', expected ';'
+   6   1        if (S3CON & S3RI)
+*** ERROR C202 IN LINE 6 OF INT.c: 'S3CON': undefined identifier
+   7   1        {
+   8   2          S3CON &= ~S3RI;
+*** ERROR C202 IN LINE 8 OF INT.c: 'S3CON': undefined identifier
+   9   2          TEMP = S3BUF;
+*** ERROR C202 IN LINE 9 OF INT.c: 'TEMP': undefined identifier
+  10   2          if (TEMP == 0XFF)
+*** ERROR C202 IN LINE 10 OF INT.c: 'TEMP': undefined identifier
+  11   2          {
+  12   3            JS = 0;
+*** ERROR C202 IN LINE 12 OF INT.c: 'JS': undefined identifier
+  13   3          }
+  14   2          switch (JS)
+*** ERROR C202 IN LINE 14 OF INT.c: 'JS': undefined identifier
+  15   2          {
+  16   3          case 0:
+  17   3            JS++;
+*** ERROR C202 IN LINE 17 OF INT.c: 'JS': undefined identifier
+  18   3            break;
+  19   3          case 1:
+  20   3            ADC_RY = TEMP;
+*** ERROR C202 IN LINE 20 OF INT.c: 'ADC_RY': undefined identifier
+  21   3            JS++;
+*** ERROR C202 IN LINE 21 OF INT.c: 'JS': undefined identifier
+  22   3            break;
+  23   3          case 2:
+  24   3            ADC_RX = TEMP;
+*** ERROR C202 IN LINE 24 OF INT.c: 'ADC_RX': undefined identifier
+  25   3            JS++;
+*** ERROR C202 IN LINE 25 OF INT.c: 'JS': undefined identifier
+  26   3            break;
+  27   3          case 3:
+  28   3            ADC_LX = TEMP;
+*** ERROR C202 IN LINE 28 OF INT.c: 'ADC_LX': undefined identifier
+  29   3            JS++;
+*** ERROR C202 IN LINE 29 OF INT.c: 'JS': undefined identifier
+  30   3            break;
+  31   3          case 4:
+  32   3            ADC_LY = TEMP;
+*** ERROR C202 IN LINE 32 OF INT.c: 'ADC_LY': undefined identifier
+  33   3            JS++;
+*** ERROR C202 IN LINE 33 OF INT.c: 'JS': undefined identifier
+  34   3            break;
+  35   3          case 5:
+C51 COMPILER V9.60.0.0   INT                                                               08/02/2021 12:58:26 PAGE 2   
+
+  36   3            ADC_SW = TEMP;
+*** ERROR C202 IN LINE 36 OF INT.c: 'ADC_SW': undefined identifier
+  37   3            JS++;
+*** ERROR C202 IN LINE 37 OF INT.c: 'JS': undefined identifier
+  38   3            break;
+  39   3          }
+  40   2          if (JS > 5)
+*** ERROR C202 IN LINE 40 OF INT.c: 'JS': undefined identifier
+  41   2            JS = 0;
+*** ERROR C202 IN LINE 41 OF INT.c: 'JS': undefined identifier
+  42   2        }
+  43   1      }
+  44          
+  45          void PWM_Isr() interrupt 22
+  46          {
+  47   1          static bit dir = 1;
+  48   1          static int val = 0;
+  49   1          char store;
+  50   1      
+  51   1          if (PWMCFG & 0x80)
+*** ERROR C202 IN LINE 51 OF INT.c: 'PWMCFG': undefined identifier
+  52   1          {
+  53   2              PWMCFG &= ~0x80;                      
+*** ERROR C202 IN LINE 53 OF INT.c: 'PWMCFG': undefined identifier
+  54   2              if (dir)
+  55   2              {
+  56   3                  val++;
+  57   3                  if (val >= CYCLE) dir = 0;
+*** ERROR C202 IN LINE 57 OF INT.c: 'CYCLE': undefined identifier
+  58   3              }
+  59   2              else
+  60   2              {
+  61   3                  val--;
+  62   3                  if (val <= 1) dir = 1;
+  63   3              }
+  64   2          
+  65   2              store = P_SW2;
+*** ERROR C202 IN LINE 65 OF INT.c: 'P_SW2': undefined identifier
+  66   2              P_SW2 |= 0x80;
+*** ERROR C202 IN LINE 66 OF INT.c: 'P_SW2': undefined identifier
+  67   2              PWM6T2 = val;
+*** ERROR C202 IN LINE 67 OF INT.c: 'PWM6T2': undefined identifier
+  68   2              PWM7T2 = CYCLE - val;
+*** ERROR C202 IN LINE 68 OF INT.c: 'PWM7T2': undefined identifier
+  69   2              P_SW2 = store;
+*** ERROR C202 IN LINE 69 OF INT.c: 'P_SW2': undefined identifier
+  70   2          }
+  71   1      }
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  31 ERROR(S)
